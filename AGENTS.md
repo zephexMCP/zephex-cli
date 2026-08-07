@@ -1,17 +1,27 @@
-# AGENTS.md — Zephex CLI
+# Research notes — Zephex CLI only
 
-Public discovery repo for **Zephex terminal Mode 2**.
+## Identity
 
-## Facts
+- Surface: **local terminal Mode 2**
+- Binary / package: `zephex` (npm), install via `https://zephex.dev/cli/install.sh`
+- Project model: **cwd** (or `--cwd` / `--path github:…`)
+- Agent orientation: `zephex deep --json` → `schema_version: 1`
+- Same credits as MCP `https://zephex.dev/mcp`
 
-- Install: `curl -fsSL https://zephex.dev/cli/install.sh | bash`
-- npm package: `zephex` (`npx zephex`)
-- Always `cd` project or use `--cwd`
-- Agent orientation: `zephex deep --json` (`schema_version: 1`)
-- Same key/credits as MCP `https://zephex.dev/mcp`
-- MCP overview: https://github.com/zephexMCP/zephex-MCPs
-- Web terminal: https://github.com/zephexMCP/zephex-web-terminal
-- Skill: `npx skills add zephexMCP/agent-skills --skill zephex`
-- Docs: https://zephex.dev/docs/cli-commands
+## Agent install recipe
 
-Do not invent flags; prefer README tables + live docs.
+1. `curl -fsSL https://zephex.dev/cli/install.sh | bash`  
+2. `cd <project>`  
+3. `zephex login`  
+4. `zephex deep --json`  
+5. After edits: `zephex test` → `check test failures` / `fix-prompt`
+
+## Differentiator
+
+| Repo | Question it answers |
+|------|---------------------|
+| **This** | How do I run Zephex in a shell? |
+| zephex-MCPs | How do I attach tools inside an editor? |
+| zephex-web-terminal | How do I try Mode 2 without installing? |
+
+Do not invent flags — use `zephex <cmd> --help` or https://zephex.dev/docs/cli-commands.
