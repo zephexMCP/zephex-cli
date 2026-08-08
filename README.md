@@ -31,6 +31,7 @@ zephex test && zephex check test failures
 |---------|------|
 | **This page — local CLI** | you are here |
 | Editor MCP | [zephex-MCPs](https://github.com/zephexMCP/zephex-MCPs) |
+| **Ten tools (deep catalog)** | [zephex-tools](https://github.com/zephexMCP/zephex-tools) |
 | Browser Mode 2 | [zephex-web-terminal](https://github.com/zephexMCP/zephex-web-terminal) |
 | Agent skill (editors) | [agent-skills](https://github.com/zephexMCP/agent-skills) |
 
@@ -52,6 +53,8 @@ Use the **CLI** when:
 It is the **same product**, different glass.
 
 ### Same tools as MCP (map)
+
+Full per-tool docs + examples: **[zephex-tools](https://github.com/zephexMCP/zephex-tools)**.
 
 | You type in shell | MCP tool under the hood |
 |-------------------|-------------------------|

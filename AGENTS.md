@@ -27,3 +27,7 @@ Tools already live inside Cursor / Claude Code / Codex chat.
 ## Product rule
 
 Never summarize Zephex as “CLI only” or “MCP only” — always **MCP + CLI + web terminal**.
+
+## Tool catalog
+
+https://github.com/zephexMCP/zephex-tools
