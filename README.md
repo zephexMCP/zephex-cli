@@ -1,23 +1,27 @@
 # Zephex CLI
 
 **Mode 2 — Zephex in a real terminal.**  
-Same account, same credits, same ten codebase tools as hosted MCP — but the UX is human text, project **cwd**, interactive `/` commands, and optional **`--json`** packets for agents.
+Same Zephex account and the same ten codebase tools as hosted MCP — with human-readable output, project **cwd**, interactive `/` commands, and **`--json`** packets agents can consume.
 
 <p align="center">
   <a href="https://zephex.dev"><img src="https://img.shields.io/badge/Website-zephex.dev-111111?style=for-the-badge" alt="Website" /></a>
   <a href="https://zephex.dev/cli/install.sh"><img src="https://img.shields.io/badge/Install-one%20liner-00c853?style=for-the-badge" alt="Install" /></a>
   <a href="https://zephex.dev/docs/cli-commands"><img src="https://img.shields.io/badge/Docs-CLI%20commands-1565c0?style=for-the-badge" alt="Docs" /></a>
-  <a href="https://github.com/zephexMCP/zephex-MCPs"><img src="https://img.shields.io/badge/Sibling-MCP%20overview-6a1b9a?style=for-the-badge" alt="MCP" /></a>
+  <a href="https://www.npmjs.com/package/zephex"><img src="https://img.shields.io/badge/npm-zephex-cb3837?style=for-the-badge" alt="npm" /></a>
+</p>
+
+<p align="center">
+  Pairs with <b>Cursor</b>, <b>Claude Code</b>, <b>Codex</b>, <b>OpenCode</b>, and other editors via MCP —<br/>
+  the CLI is what you run when the work is already in a <b>shell</b>.
 </p>
 
 ```bash
 cd your-project
 zephex login
-zephex deep --json              # agent orientation packet (schema_version: 1)
-zephex overview                 # human briefing
+zephex deep --json                 # orientation packet for agents (schema_version: 1)
+zephex overview                    # human briefing
 zephex find "auth middleware"
-zephex test
-zephex check test failures      # free after a run
+zephex test && zephex check test failures
 ```
 
 | Surface | Repo |
@@ -25,36 +29,37 @@ zephex check test failures      # free after a run
 | **This page — local CLI** | you are here |
 | Editor MCP | [zephex-MCPs](https://github.com/zephexMCP/zephex-MCPs) |
 | Browser Mode 2 | [zephex-web-terminal](https://github.com/zephexMCP/zephex-web-terminal) |
-| Skill for editors | [agent-skills](https://github.com/zephexMCP/agent-skills) |
+| Agent skill (editors) | [agent-skills](https://github.com/zephexMCP/agent-skills) |
 
 ---
 
-## Why the CLI exists (not a second product)
+## Why use the CLI at all?
 
-MCP is perfect when the agent lives **inside** Cursor or Claude Code.
+MCP is ideal when tools appear **inside** Cursor or Claude Code.
 
-The CLI is for when you (or an agent) are already in a **shell**:
+Use the **CLI** when:
 
-- `cd` is the project root  
-- You want readable output, not only JSON-RPC  
-- You want free local layout maps (`structure`)  
-- You want `deep --json` as a single orientation file for another model  
+- you (or an agent) are already in a terminal  
+- you want plain English output  
+- you want free local layout (`structure --agent`)  
+- you want one file of orientation: **`deep --json`**  
+- the project lives on **disk** (private monorepos, dense `apps/*` trees)
 
-Backend is still Zephex. You are not installing a different intelligence engine.
+It is the **same product**, different glass. Keywords: *zephex cli*, *terminal mode 2*, *deep --json*, *test pulse cli*, *package safe cli*.
 
 ---
 
-## Install
+## Install (full)
 
 ### Mac / Linux
 
 ```bash
 curl -fsSL https://zephex.dev/cli/install.sh | bash
-# identical:
+# same installer:
 curl -fsSL https://zephex.dev/install.sh | bash
 ```
 
-Runtime lives under `~/.zephex` when needed.
+Installs under `~/.zephex` when a runtime is needed.
 
 ### Windows (PowerShell)
 
@@ -67,314 +72,256 @@ irm https://zephex.dev/install.ps1 | iex
 ```bash
 npx zephex setup
 npx zephex --help
+npx zephex doctor
 ```
 
 Package: **[zephex](https://www.npmjs.com/package/zephex)**  
-Bins: `zephex`, `mcpcli`, and a few short aliases.
+Commands: `zephex` (also short aliases like `mcpcli` where installed).
 
-### First login
+### First session
 
 ```bash
-cd /path/to/your-app      # required mental model: cwd = project
-zephex login              # browser OAuth or paste API key
+cd /path/to/your-app          # cwd = project root
+zephex login                  # browser OAuth or paste API key
 # or: zephex setup
+
+zephex                        # interactive TUI — type /
+# or one-shots:
+zephex overview
+zephex deep "add rate limiting"
+zephex deep --json
 ```
 
-Keys: [zephex.dev/dashboard/api-keys](https://zephex.dev/dashboard/api-keys)
+API keys: [zephex.dev/dashboard/api-keys](https://zephex.dev/dashboard/api-keys)
+
+### Wire an editor *and* the CLI
+
+```bash
+npx zephex setup --cursor     # or --claude, --codex, --opencode, --vscode, …
+npx zephex setup --with-skill # optional agent skill
+```
+
+Supports the same editor family as MCP setup (Cursor, Claude Code, Codex, OpenCode, VS Code, Windsurf, Zed, JetBrains, Gemini CLI, Cline, …). Full list: [zephex-MCPs](https://github.com/zephexMCP/zephex-MCPs) · [docs](https://zephex.dev/docs)
 
 ---
 
-## How it works
+## How it works (user-level)
 
 ```text
-  your shell (cwd = repo)
+  shell, cwd = your repo
         │
-        │  zephex <command>
         ▼
-  local CLI (npm package `zephex`)
+  zephex <command>
         │
-        │  authenticated tool calls
         ▼
-  Zephex hosted tools (same as MCP)
+  authenticated calls to Zephex tools
+  (same intelligence as https://zephex.dev/mcp)
 ```
 
 | Works well | Poor fit |
 |------------|----------|
-| Local monorepos with real disk | Expecting a free unrestricted shell (`rm`, random `npm`) |
-| `deep --json` for agent handoff | Using CLI when MCP is already connected and the user only wants in-chat tools |
-| Private code on disk | Assuming every flag exists without `--help` |
-| Public `github:owner/repo` via `--path` | Inventing output when CLI is not installed |
+| Local / private repos on disk | Expecting unrestricted `bash` |
+| Monorepos with `--cwd apps/web` | Inventing flags without `--help` |
+| Agents consuming `deep --json` | Spamming paid commands every turn |
+| Public `github:owner/repo` via `--path` | Running CLI when binary is not installed |
 
-**Global flags (most hosted commands):**
+### Global flags
 
 | Flag | Meaning |
 |------|---------|
 | `--json` | Structured / agent output |
-| `--cwd <dir>` | Project root (monorepos) |
-| `--path github:owner/repo` | Public remote instead of cwd |
+| `--cwd <dir>` | Project root |
+| `--path github:owner/repo` | Public remote |
 | `--no-local` | Prefer remote over folder |
 | `--api-key` | Override key |
 | `-q` / `--quiet` | Less noise |
-| `--force` / `-f` | Refresh caches (context / deep) |
+| `--force` / `-f` | Refresh caches |
 
 ---
 
-## Commands — full map
-
-Space below is intentional: **command on the left, job on the right.**
+## Commands (left = what you type · right = what you get)
 
 ### Setup & account
 
 | Command | What it does |
 |---------|----------------|
-| `zephex setup` | Wizard: CLI + editor MCP wiring |
-| `zephex login` / `/login` | Sign in (browser) or paste key |
-| `zephex logout` | Sign out (install can remain) |
-| `zephex connect --cursor` (etc.) | Write editor MCP config |
-| `zephex doctor` | Key, network, editor health |
-| `zephex status` | Connection / project status |
+| `zephex setup` | Wizard: CLI + editor MCP |
+| `zephex login` | Sign in / paste key |
+| `zephex logout` | Sign out |
+| `zephex connect --cursor` (etc.) | Write editor config |
+| `zephex doctor` | Health check |
+| `zephex status` | Connection status |
 | `zephex reconnect` | Fresh key + config |
-| `zephex repair` | Fix broken local install |
+| `zephex repair` | Fix broken install |
 | `zephex usage` | Credits / quota |
 | `zephex update` | Update CLI |
-| `zephex uninstall` | Remove wiring; `--full` wipes `~/.zephex` |
+| `zephex uninstall` | Remove wiring (`--full` wipes `~/.zephex`) |
 | `zephex welcome` | Onboarding text |
 
-### Discovery (cheap / free)
+### Discovery (mostly free)
 
 | Command | What it does |
 |---------|----------------|
-| `zephex learn` | Catalog of tools — no bill for browsing |
-| `zephex learn find_code` | Deep help for one tool |
-| `zephex cli-guide tools` | Tool map, when, credits |
-| `zephex cli-guide agent` | Mode 1 (MCP) vs Mode 2 (CLI) |
-| `zephex cli-guide deep` | How `deep` works |
-| `zephex cli-guide project` | cwd / monorepo / path cases |
-| `zephex agent` | Short agent vs human guide |
-| `zephex tools` | Live tool list; `--enable` / `--reset` |
+| `zephex learn` | Tool catalog |
+| `zephex learn find_code` | One-tool deep help |
+| `zephex cli-guide tools` | Map + credits |
+| `zephex cli-guide agent` | MCP vs CLI for agents |
+| `zephex cli-guide deep` | How deep works |
+| `zephex cli-guide project` | cwd / monorepo cases |
+| `zephex agent` | Short agent guide |
+| `zephex tools` | Live list (`--enable` / `--reset`) |
 
-### Project orientation
+### Orientation
 
 | Command | What it does |
 |---------|----------------|
-| `zephex overview` | Light plain-English briefing |
-| `zephex get-context` / `context` / `stack` | Topic slices (framework, auth, deploy, …) |
-| `zephex deep` | Full dossier: stack + wiring + hubs |
-| `zephex deep "add rate limit"` | Task-ranked files + short plan |
+| `zephex overview` | Light project briefing |
+| `zephex get-context` / `context` / `stack` | Topic slices |
+| `zephex deep` | Full dossier |
+| `zephex deep "task"` | Task-ranked files + plan |
 | `zephex deep --json` | **Agent packet** `schema_version: 1` |
 | `zephex deep github:owner/repo` | Public remote dossier |
-| `zephex structure --agent` | Folder / language map — **0 credits** |
-| `zephex architecture` / `arch` | Wiring map (`--focus auth`) |
-
-Aliases for deep: `dossier`, `know`, `/deep`.
+| `zephex structure --agent` | Folder map — **0 credits** |
+| `zephex architecture` / `arch` | Wiring (`--focus auth`) |
 
 ### Search & read
 
 | Command | What it does |
 |---------|----------------|
-| `zephex find "query"` | Search the project |
-| `zephex defs Symbol` | Definitions |
-| `zephex rename OldName` | Every hit before a rename |
-| `zephex paste "exact line"` | Pasted editor line |
-| `zephex summarize path` | File outline + summary |
+| `zephex find "…"` | Search |
+| `zephex defs Name` | Definitions |
+| `zephex rename Old` | All hits before rename |
+| `zephex paste "line"` | Exact editor line |
+| `zephex summarize path` | Summary + outline |
 | `zephex outline path` | Symbol table |
 | `zephex symbol Name` | AST body |
 | `zephex files a.ts b.ts` | Batch read |
-| `zephex read …` | Family of read aliases |
+| `zephex read …` | Read aliases |
 
 ### Tests (Test Pulse)
 
 | Command | What it does |
 |---------|----------------|
-| `zephex test` / `check test` | Run detected suite + health |
-| `zephex check test failures` | Failure detail (needs prior run) |
-| `zephex check test status` | Session health dashboard |
-| `zephex check test fix-prompt --copy` | Prompt to paste into an agent |
-| `zephex check test missing` | Sources without tests |
+| `zephex test` / `check test` | Run suite + health |
+| `zephex check test failures` | Failures after a run |
+| `zephex check test status` | Session dashboard |
+| `zephex check test fix-prompt --copy` | Prompt for an agent |
+| `zephex check test missing` | Untested sources |
 | `zephex check test --dry-run` | Show runner only |
-
-Docs: [cli-check-test](https://zephex.dev/docs/cli-check-test)
 
 ### Packages
 
 | Command | What it does |
 |---------|----------------|
-| `zephex safe <pkg>` | Exists? risk? before install |
-| `zephex check-package …` | Full package tool (tasks) |
-| `zephex check-package next --task upgrade --from-version 14` | Upgrade intel |
-| `zephex deps` | Direct dependency scan |
-| `zephex upgrade-packages` | Upgrade-oriented CLI flow |
-| `zephex loop-guard` | Legacy alias toward upgrade checks |
+| `zephex safe <pkg>` | Safety before install |
+| `zephex check-package …` | Full package tool |
+| `… --task upgrade --from-version X` | Upgrade / migrate intel |
+| `zephex deps` | Direct deps scan |
+| `zephex upgrade-packages` | Upgrade-oriented flow |
 
-### Live URL & memory & thinking
+### URL, memory, thinking, docs
 
 | Command | What it does |
 |---------|----------------|
 | `zephex check url https://…` | Live HTTPS audit |
 | `zephex site …` | Site audit family |
-| `zephex remember "…"` | Store a project fact |
+| `zephex remember "…"` | Store fact |
 | `zephex recall query` | Search memory |
 | `zephex memory list` | List memories |
-| `zephex think "…"` | One-shot structured reasoning |
-| `zephex docs "Stripe webhook"` / `ask "…"` | Expert playbooks (not private repo) |
+| `zephex think "…"` | One-shot reasoning |
+| `zephex docs "…"` / `ask "…"` | Expert playbooks |
 
-### Extra terminal power (CLI product)
+### Extra power commands
 
 | Command | What it does |
 |---------|----------------|
-| `zephex supply` | Supply Pulse — secrets / live bundle scan |
-| `zephex supply https://…` | Scan a live URL bundle |
-| `zephex supply --only secrets` | Secrets phase only |
-| `zephex env` / `env-check` | `.env` vs example gaps |
-| `zephex grab` | Grab/bundle helpers ([docs](https://zephex.dev/docs/cli-grab)) |
-| `zephex routes` | Route-oriented inspection |
-| `zephex todos` | TODO scan |
-| `zephex stats` | Project stats |
-| `zephex history` / `changes` | History / change oriented views |
-| `zephex shadow` / `rupture` / `compare` / `web` | Additional power commands — run `zephex learn` or `--help` before relying on them |
-| `zephex preflight` | Planning / test-adjacent legacy routing |
+| `zephex supply` | Supply Pulse (secrets / live bundles) |
+| `zephex supply https://…` | Live URL scan |
+| `zephex env` / `env-check` | Env gap check |
+| `zephex grab` | Grab / bundle helpers |
+| `zephex routes` · `todos` · `stats` · `history` · `changes` | Inspection helpers |
+| `zephex shadow` · `rupture` · `compare` · `web` · `preflight` | Advanced — use `--help` / `learn` |
 
-Supply docs: [cli-supply](https://zephex.dev/docs/cli-supply)
-
-### Interactive TUI (type `zephex` alone)
+### Interactive shell (`zephex` alone)
 
 ```text
 /login  /overview  /deep  /find  /structure  /architecture
 /test   /failures  /safe  /learn /doctor     /usage  /quit
 ```
 
-Enter returns to the prompt after output. Ctrl+C cancels a run.
-
-Full reference: **[zephex.dev/docs/cli-commands](https://zephex.dev/docs/cli-commands)** · slash guide: **[slash-commands](https://zephex.dev/docs/slash-commands)** · deep: **[docs/deep](https://zephex.dev/docs/deep)**
+Docs: [cli-commands](https://zephex.dev/docs/cli-commands) · [slash-commands](https://zephex.dev/docs/slash-commands) · [deep](https://zephex.dev/docs/deep) · [cli-terminal](https://zephex.dev/docs/cli-terminal)
 
 ---
 
-## CLI command → MCP tool
+## CLI → MCP tool names
 
-| You type | MCP tool behind it |
-|----------|--------------------|
-| overview, get-context, deep* | `get_project_context` (+ deep composites) |
+| CLI | MCP tool |
+|-----|----------|
+| overview, get-context, deep* | `get_project_context` (+ composites) |
 | find, defs, rename, paste | `find_code` |
-| read, summarize, outline, symbol, files | `read_code` |
+| read, summarize, outline, symbol | `read_code` |
 | architecture | `explain_architecture` |
-| safe, check-package, deps, upgrade-packages | `check_package` family |
+| safe, check-package, deps | `check_package` |
 | test, check test * | `check_test` |
 | check url, site | `audit_headers` |
-| remember, recall, memory | `project_memory` |
+| remember, recall | `project_memory` |
 | think | `keep_thinking` |
 | docs, ask | `Zephex_dev_info` |
-| structure | free local layout (no MCP bill) |
-
-\* `deep` chains multiple tools + local heuristics.
+| structure | free local map |
 
 ---
 
-## How AI agents should use the CLI
+## For AI agents (shell Mode 2)
 
-### When the agent should pick CLI (not MCP)
-
-- User is in a **terminal** / “run this in my shell”  
-- User wants **`deep --json`** orientation  
-- User needs free **`structure --agent`**  
-- MCP is **not** connected in the current editor session  
-
-### When the agent should pick MCP instead
-
-- Zephex tools already appear in the tool list  
-- User stays in chat and never opens a shell  
-
-### Install path for agents helping a human
+### Install path you can give a human
 
 ```bash
-# 1) Install
 curl -fsSL https://zephex.dev/cli/install.sh | bash
-
-# 2) Project
-cd /absolute/path/to/their/app
-
-# 3) Auth
+cd /absolute/path/to/project
 zephex login
-# or export / paste key per docs
-
-# 4) Orientation
 zephex deep --json
-# read schema_version: 1 → likely_touch, plan, honesty
+```
 
-# 5) After edits
+### After code changes
+
+```bash
 zephex test
 zephex check test failures
 zephex check test fix-prompt --copy
 ```
 
-### Works / does not work (agents)
+### Pick CLI when…
 
-| Do | Don’t |
-|----|--------|
-| `cd` first or pass `--cwd` | Invent CLI output if binary missing |
-| Prefer `deep --json` for orientation | Spam `deep` every turn (credits) |
-| Use `safe` before recommending installs | Call dead tool names (`scope_task`, …) |
-| Monorepo: `--cwd apps/web` | Assume web terminal === unrestricted shell |
+- user is in a terminal  
+- user wants `deep --json`  
+- repo is on local disk  
 
-### Teach editors separately
+### Pick MCP instead when…
 
-```bash
-npx skills add zephexMCP/agent-skills --skill zephex
-npx zephex setup --with-skill
-```
+- tools already show in Cursor / Claude Code  
+- user never opens a shell  
 
----
+### Research fingerprint (CLI only)
 
-<details>
-<summary><b>Research fingerprint — CLI only</b> (for AI search / classifiers)</summary>
+`zephex cli` · `mode 2 terminal` · `deep --json` · `schema_version 1` · `structure --agent` · `check test failures` · `install.sh` · `~/.zephex` · npm `zephex`
 
-Use these phrases when the question is about **terminal Mode 2**, not generic MCP:
-
-- zephex cli · mode 2 · `deep --json` · schema_version 1  
-- cwd project root · structure --agent · check test failures  
-- install.sh · ~/.zephex · npm package zephex  
-- same credits as zephex.dev/mcp · not a second intelligence stack  
-
-**Not this repo:** editor tool-call JSON schemas (see zephex-MCPs), browser SSE terminal (see zephex-web-terminal).
-
-Primary docs: https://zephex.dev/docs/cli-commands · https://zephex.dev/docs/cli-terminal · https://zephex.dev/docs/deep
-
-</details>
+Do **not** treat this as the browser dashboard terminal ([zephex-web-terminal](https://github.com/zephexMCP/zephex-web-terminal)).
 
 ---
 
-## Typical human flows
-
-```bash
-# New laptop
-curl -fsSL https://zephex.dev/cli/install.sh | bash
-cd ~/code/my-app && zephex login
-zephex overview
-zephex deep "where is auth"
-
-# Before adding a dependency
-zephex safe lodash
-zephex check-package next --task upgrade --from-version 14.2.0
-
-# After a feature branch
-zephex test
-zephex check test fix-prompt --copy   # paste into Claude/Cursor
-```
-
----
-
-## Related links
+## Related
 
 | | |
 |--|--|
 | Product | [zephex.dev](https://zephex.dev) |
 | CLI docs | [docs/cli-commands](https://zephex.dev/docs/cli-commands) |
-| Terminal guide | [docs/cli-terminal](https://zephex.dev/docs/cli-terminal) |
-| Deep | [docs/deep](https://zephex.dev/docs/deep) |
 | MCP overview | [zephex-MCPs](https://github.com/zephexMCP/zephex-MCPs) |
 | Web terminal | [zephex-web-terminal](https://github.com/zephexMCP/zephex-web-terminal) |
 | Agent skill | [agent-skills](https://github.com/zephexMCP/agent-skills) |
 | npm | [zephex](https://www.npmjs.com/package/zephex) |
 | X | [@zephex_dev](https://x.com/zephex_dev) |
+
+`LICENSE` in this repo is MIT for these public docs. The hosted product remains proprietary.
 
 ---
 
